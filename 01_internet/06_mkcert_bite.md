@@ -2,6 +2,10 @@
 
 Learn to explain how Internet connections are secured.
 
+_Note: While the principles and explanation are the same, the exact steps in the
+video differ slightly from the commands below. Use the commands below instead of
+the ones in the video, as the new commands avoid `openssl` version issues._
+
 [Video Alternative](https://www.youtube.com/watch?v=Ivym1ZaBxfI&t=766s)
 
 ## The question: How are Internet connections secured?
@@ -20,15 +24,26 @@ password to encrypt our data. OK that sounds good. Let's try it out. Here's my
 data:
 
 ```
-U2FsdGVkX1/FA+B7o7Ax6R0nsPHBRqPfFoB8McMewLvMspB7d0QfgUaiuYo2Soci
-qVYlMOgFbsugjCt38bYCIUsIAT3D1CjVWo88UXJ76v4pdyNUp7N0Qd4Zb/s3jZvH
-QjFUsVHGVqCui5IwbLRlnUPaf4CKSnVip6lQaPlGpfE=
+-----BEGIN AGE ENCRYPTED FILE-----
+YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IHNjcnlwdCA3bVd3ekJQSm1SdDZLYlRO
+QTVyVHV3IDE4Cmlhdm5FYnR6UTFkR1lJdFRZSmVFUmVFMGc3SmNaTjkxdnU2cTNQ
+WjR6V2cKLS0tICtWQXJoeGx4d2x0U1hxMWR2dWFkWW9hc3Q2ckJZb3E0MUhSK3hR
+ZmhHbXMKpppH/I93wmhK4PgY2EO5obh0mt4/yucR1rM1H+i/4nH7nY70vo/KmhdO
+ttYKPm+HfAflt9Q65aKDK8FRqaXgJjPr9/vxFzl9i977Av3TyRF+uOUhaCi9xuIl
+R5QGPt0MdC1As1T8AHzWxK7F7cwcG0y1uH6GIWkdLBMjP5mtxeyfpKC3MFQpgb7/
+MxYUVy2/PIU9qR2t5PcSCl3wYL/qBSfdSR/FPF5yVBVksljH9w4Z8mEl4zejZOp7
+nF12MRd5J7Fprq09RUH0rShyXwKvmLvvMm84wV9SLprXxQiTexHa7gLdoUBTVxMQ
+cXf1pvJStC9Fjws50lYdmB74kg5IRaAbasD2w3LJQFa9dUrpRWNDWtHOqqdKBtUX
+KF6v3jiJL8LSAvlDaNLSJxDZDkdYRSm9d7l2d6jUqp/qOKfS4kta+NRYCW43
+-----END AGE ENCRYPTED FILE-----
 ```
 
 Save it to a file `secret.txt.enc` and you can decrypt it using this command:
 
-```
-; openssl aes-256-cbc -base64 -d -in secret.txt.enc
+```shell
+# First install `age`, an encryption tool
+; brew install age
+; age -d secret.txt.enc
 ```
 
 You just need the password... oh wait, no, how am I going to send you the
@@ -63,25 +78,73 @@ decrypt them. So no one in the middle will be able to decrypt it.
 Here's my public key:
 
 ```
------BEGIN PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDvK9hhFVu/FDtjcFhSIDHs25Me
-JLk5Ovrj3tMaCWLWdBJNoPoFnn+Vzs102c6pvZjZkNUsoRjZsg6+kEeFAqmhvucM
-7YPvm1Es8YpTw9T0sa2Kp6PBL6hy7g6ZB9h98XpqKVU9jGmzTvSG50Wx1hVQ+NjN
-dhgAV2QsOD0cjyKlUwIDAQAB
------END PUBLIC KEY-----
+age136adjknxx86sv6xjkcnnfsxs4hqp64w4g5glrf8sspr57att8dhszzwqwa
 ```
 
-Save that to a file `kay-public.pem` and then run this:
+You can use it to encrypt data with this command
 
 ```shell
-; cat - | openssl rsautl -encrypt -inkey kay-public.pem -pubin | base64
+; age -a -r age136adjknxx86sv6xjkcnnfsxs4hqp64w4g5glrf8sspr57att8dhszzwqwa
 # Type in a message and then hit ctrl+d to finish
 ```
 
-You'll see a big string of letters and numbers. Send over the whole thing and
-I'll get back to you.
+You'll see a big chunk of letters and numbers. You can send these to the person
+who has the corresponding private key and only they will be able to decrypt it —
+even if they got hold of your message and the public key you used up there to
+encrypt it.
+
+I've set up the Makers Slack bot `Gnaw` to demonstrate this. It has the private
+key for the above message. DM the output to [Gnaw on
+Slack](https://makersstudents.slack.com/archives/D9RJ9TSR4) and it will read
+your message back to you.
 
 <!-- OMITTED -->
+
+<details>
+  <summary>:unamused: A bot? Seems a bit impersonal...</summary>
+
+  ---
+
+  If you like, we can exchange some encrypted messages together. You can send me
+  an encrypted message only I can read, and then I'll send you an encrypted
+  message only you can read.
+
+  To do this, you'll need your own private & public key pair. Generate one using
+  this command:
+
+  ```shell
+  ; age-keygen -o ~/Desktop/my_secret_key.txt
+  ```
+
+  This will generate a private key in `my_secret_key.txt` and a public key,
+  which it will print to the terminal and also save a copy of in the file.
+
+  Keep `my_secret_key.txt` safe! The above command puts on your Desktop so
+  you'll know where it is. You can put it elsewhere if you like, just don't lose
+  it.
+
+  Now encrypt a message to me using *my* public key:
+
+  ```shell
+  # Note this public key is different from the one above
+  ; age -a -r age1vpc8mry0q5ncp56ve7p9judgs92lejyyulaht622elnqdvhjmqmqsrwyth
+  # Type your message here...
+  # End it by telling me your own public key. But don't send me your secret key!
+  # You'll know it is secret because it starts with `AGE-SECRET-KEY`.
+  # When you're done hit ctrl+d to finish
+  ```
+
+  Then send the encrypted message to me via email at `kay@kaylack.net`. I'll
+  send you one back using your public key. You can decrypt it using your private
+  key via this command:
+
+  ```shell
+  ; age -d -i ~/Desktop/my_secret_key.txt
+  # Paste in the encrypted message
+  ```
+
+  ---
+</details>
 
 Let's see how this technique is used to secure web connections.
 
