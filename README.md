@@ -29,9 +29,9 @@ at its history, development, and some practical tools.
 
 1. [`ping`, and how we persuaded computers to talk](01_internet/01_ping_bite.md)
 2. [`traceroute`, and how we organised computers into networks](01_internet/02_traceroute_bite.md)
-3. [`telnet`, and how formed many connections over one cable](01_internet/03_telnet_bite.md)
+3. [`telnet`, and how we formed many connections over one cable](01_internet/03_telnet_bite.md)
 4. [`curl`, and how we developed common languages](01_internet/04_curl_bite.md)
-5. [`dig`, and how developed human-readable names](01_internet/05_dig_bite.md)
+5. [`dig`, and how we developed human-readable names](01_internet/05_dig_bite.md)
 6. [`mkcert`, and how we secured the internet](01_internet/06_mkcert_bite.md)
 7. [`docker`, and how we created the cloud](01_internet/07_docker_bite.md)
 
