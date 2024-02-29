@@ -1,7 +1,8 @@
 
 import os
 import psycopg
-from flask import Flask, request, redirect, url_for, escape
+from flask import Flask, request, redirect, url_for
+from markupsafe import escape
 
 # We're going to write a function that constructs an URL for the database
 def get_database_url():
