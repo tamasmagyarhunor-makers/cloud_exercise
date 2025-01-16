@@ -8,9 +8,6 @@ FROM python:3.11
 # This base image contains essentially everything necessary for a 'virtual
 # computer'. It has a terminal, certain basic commands, and of course Python.
 
-# We run a command to install `pipenv`
-RUN pip install pipenv
-
 # We'll need our app's files in the container in order to be able to run them!
 # We copy them in from the current directory to the folder `/app` in
 # our virtual computer. Reminder `.` means 'the current directory'
@@ -22,7 +19,7 @@ WORKDIR /app
 # We run `pipenv install` to install our project's dependencies. Since we've
 # copied in our `Pipfile`, `pipenv` will use that to get a list of dependencies.
 # We include a couple of extra options suitable for deployment.
-RUN pipenv install --system --deploy
+RUN pip install -r requirements.txt
 
 # At this point we've set up our virtual computer, but we've not _yet_ run our
 # application. And we're not going to! We're just setting up the container
