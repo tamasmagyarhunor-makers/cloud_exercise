@@ -4,7 +4,7 @@
   "hostname": "YOURNAME-message-database",
   "image": "postgres:12",
   "env": {
-    "POSTGRES_PASSWORD": "47378f40d8ff4bffdfc5b883ee4e250c0eeb26bb"
+    "POSTGRES_PASSWORD": "@my_db_password"
   },
   "volumes": ["YOURNAME_message_database_volume:/var/lib/postgresql/data"]
 }
